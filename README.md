@@ -54,7 +54,7 @@ assuming directory structure:
 manager/$HOSTNAME/messages.gz
 worker/$HOSTNAME/messages.gz
 ```
-
+do: 
 ```
 for file in */*/messages.gz; do 
   echo $file; 
