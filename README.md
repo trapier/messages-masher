@@ -1,4 +1,4 @@
-## summary
+### summary
 graylog + compose for post-loading `/var/log/messages*` files from centos 7 default logging config.
 
 ### deploy
