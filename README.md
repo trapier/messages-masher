@@ -67,5 +67,6 @@ done
 ```
 
 notes:
+- `lineno` inserted to enable ordering in query results, because syslog timestamps are not precise enough to uniquely identify each message. this technique becomes brittle when multiple files are loaded from the same origin host.
 - `pv` rate limits to prevent drops.  beats can't introduce line numbers and raw doesn't support backpressure.  watch the journal stats in the graylog ui and tune it for your instance if you like.
-- `lineno` inserted enable ordering in query results, because syslog timestamps are not precise enough to uniquely identify each message. this technique becomes brittle when multiple files are loaded from the same host.
+
