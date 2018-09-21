@@ -56,16 +56,18 @@ done
 **notes:**
 - `lineno` inserted to enable ordering of query results.  Neither syslog nor event-received timestamps are sufficiently precise to reliably distinguish "events" arriving at 10kHz. using file line number for ordering may be brittle for logs in the transition between files from the same origin host.
 - `pv` rate limits to prevent drops due to journal overflow.  beats can't introduce line numbers and raw doesn't support backpressure.  wait between files until journal recovers to 10% before proceeding to next file.
-- tune the `pv` rate limit for your hardware if you like. journal depth can be monitored in the graylog web ui under `System > Nodes > Details`, or in a terminal:
+    - tune the `pv` rate limit for your hardware if you like. journal depth can be monitored in the graylog web ui under `System > Nodes > Details`, or in a terminal:
 
-    ```
-    node_id=$(curl -su admin:admin http://127.0.0.1:9000/api/cluster |jq '.[]|.node_id' -r)
-    watch "curl -su admin:admin http://127.0.0.1:9000/api/cluster/${node_id}/journal |jq '100*.journal_size/.journal_size_limit'"
-    ```
-- rough test with 23GiB of messages took 2 hrs to load (12GiB/hr).
+        ```
+        node_id=$(curl -su admin:admin http://127.0.0.1:9000/api/cluster |jq '.[]|.node_id' -r)
+        watch "curl -su admin:admin http://127.0.0.1:9000/api/cluster/${node_id}/journal |jq '100*.journal_size/.journal_size_limit'"
+        ```
+    - `pv` rate can be changed on a running instance with `pv -R ${pid} -L ${new_limit}
 
 **todo:**
-* develep an input strategy that supports realtime backpressure *and* file line numbering.  can beats read from a socket or named pipe?
+* develop an input strategy that supports realtime backpressure *and* file line numbering.  
+  - can beats read from a socket or named pipe?
+  - or send the whole for loop through `pv`, monitor journal, and slow down `pv` if journal gets too deep
 * test if pipeline `set_fields` is faster than individual `set_field` calls
 * how hard is it to scale ES?
 
