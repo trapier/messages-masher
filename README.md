@@ -13,11 +13,11 @@ docker-compose up -d
 ./configure.sh
 ```
 
-notes:
-- graylog 3.0 content packs support pipelines and a bunch of other stuff, so this section will become "apply this content pack".
-- had to use a pipeline because extractors can't set timestamp
+**notes:**
+- had to use a pipeline because extractors can't set timestamp (to originally-logged time)
+- graylog 3.0 content packs support pipelines and a bunch of other stuff, so this section may eventually simplify to "apply this content pack".
 
-todo:
+**todo:**
 - multiline parsing for kernel splats and ooms.
 - additional pipelines
 
@@ -54,9 +54,9 @@ done
 ```
 
 notes:
-- `lineno` inserted to enable ordering in query results, because syslog timestamps are not precise enough to uniquely identify each message. this technique becomes brittle when multiple files are loaded from the same origin host.
-- `pv` rate limits to prevent drops.  beats can't introduce line numbers and raw doesn't support backpressure.  wait between files until journal recovers to 10% before proceeding to next file as a saftey.
-- watch the journal stats in the graylog ui and tune it for your instance if you like. how to watch journal stats:
+- `lineno` inserted to enable ordering of query results.  Neither syslog nor "event received" timestamps not precise enough to reliably order "events" recieved at 10kHz. using file line number for ordering may be brittle in the transition between files from the same origin host.
+- `pv` rate limits to prevent drops.  beats can't introduce line numbers and raw doesn't support backpressure.  wait between files until journal recovers to 10% before proceeding to next file.
+- tune the `pv` rate limit for your hardware if you like. journal depth can be monitored in the graylog web ui under `System > Nodes > Details`, or in a terminal:
 
     ```
     node_id=$(curl -su admin:admin http://127.0.0.1:9000/api/cluster |jq '.[]|.node_id' -r)
