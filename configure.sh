@@ -1,5 +1,11 @@
 #!/usr/bin/env sh
 
+echo '# 0. wait for graylog api to be available'
+
+until curl -m1 -s http://127.0.0.1:9000/api/system/lbstatus; do
+    sleep 5
+done
+
 echo '# 1. raw global tcp input on `5555`'
 
 curl -s \
