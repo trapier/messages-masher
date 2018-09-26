@@ -62,7 +62,7 @@ done
         node_id=$(curl -su admin:admin http://127.0.0.1:9000/api/cluster |jq '.[]|.node_id' -r)
         watch "curl -su admin:admin http://127.0.0.1:9000/api/cluster/${node_id}/journal |jq '100*.journal_size/.journal_size_limit'"
         ```
-    - `pv` rate can be changed on a running instance with `pv -R ${pid} -L ${new_limit}
+    - `pv` rate can be changed on a running instance with `pv -R$(ps h -o pid -C pv) -L ${NEW_RATE}M`
 
 **todo:**
 * develop an input strategy that supports realtime backpressure *and* file line numbering.  
