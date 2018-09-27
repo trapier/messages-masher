@@ -4,7 +4,7 @@ graylog + compose for post-loading `/var/log/messages*` files from centos 7 defa
 ### deploy
 
 ```
-docker-compose up -d -p graylog/docker-compose.yml
+docker-compose -f graylog/docker-compose.yml up -d
 ```
 
 ### configure
