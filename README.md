@@ -14,8 +14,10 @@ docker-compose up -d -p graylog/docker-compose.yml
 ```
 
 **notes:**
-- had to use a pipeline because extractors can't set timestamp (to originally-logged time)
-- graylog 3.0 content packs support pipelines and a bunch of other stuff, so this section may eventually simplify to "apply this content pack".
+- had to use a pipeline because extractors can't set timestamp (to
+  originally-logged time)
+- graylog 3.0 content packs support pipelines and a bunch of other stuff, so
+  this section may eventually simplify to "apply this content pack".
 
 **todo:**
 - multiline parsing for kernel splats and ooms.
@@ -54,9 +56,16 @@ done
 ```
 
 **notes:**
-- `lineno` inserted to enable ordering of query results.  Neither syslog nor event-received timestamps are sufficiently precise to reliably distinguish "events" arriving at 10kHz. using file line number for ordering may be brittle for logs in the transition between files from the same origin host.
-- `pv` rate limits to prevent drops due to journal overflow.  beats can't introduce line numbers and raw doesn't support backpressure.  wait between files until journal recovers to 10% before proceeding to next file.
-    - tune the `pv` rate limit for your hardware if you like. journal depth can be monitored in the graylog web ui under `System > Nodes > Details`, or in a terminal:
+- `lineno` inserted to enable ordering of query results.  Neither syslog nor
+  event-received timestamps are sufficiently precise to reliably distinguish
+  "events" arriving at 10kHz. using file line number for ordering may be brittle
+  for logs in the transition between files from the same origin host.
+- `pv` rate limits to prevent drops due to journal overflow.  beats can't
+  introduce line numbers and raw doesn't support backpressure.  wait between
+  files until journal recovers to 10% before proceeding to next file.
+    - tune the `pv` rate limit for your hardware if you like. journal depth can
+      be monitored in the graylog web ui under `System > Nodes > Details`, or in
+      a terminal:
 
         ```
         node_id=$(curl -su admin:admin http://127.0.0.1:9000/api/cluster |jq '.[]|.node_id' -r)
@@ -67,7 +76,8 @@ done
 **todo:**
 * develop an input strategy that supports realtime backpressure *and* file line numbering.  
   - can beats read from a socket or named pipe?
-  - or send the whole for loop through `pv`, monitor journal, and slow down `pv` if journal gets too deep
+  - or send the whole for loop through `pv`, monitor journal, and slow down `pv`
+    if journal gets too deep
 * test if pipeline `set_fields` is faster than individual `set_field` calls
 * how hard is it to scale ES?
 
@@ -80,7 +90,9 @@ done
 #### switch to elk
 why
 - logstash supports sequencing internally https://stackoverflow.com/a/49896736
-- only area graylog beats kibana is exporting es queries
+- aimed kibana at existing es with `docker run --link` and took it for a spin.
+  for my simple use case only area graylog UI is better than kibana feature wise
+  is exporting queries.
 
 research + test
 - beats backpressure
@@ -99,4 +111,5 @@ research + test
         - does beats pause reading in the input file, or does it read into beats process memory?
 
 do
+- find elk compose
 - convert pipeline rule to logstash filter
