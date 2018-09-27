@@ -75,3 +75,28 @@ done
 
 * http://localhost:9000
 * login: `admin:admin`
+
+### todo
+#### switch to elk
+why
+- logstash supports sequencing internally https://stackoverflow.com/a/49896736
+- only area graylog beats kibana is exporting es queries
+
+research + test
+- beats backpressure
+
+    > For example, when the beats input encounters back pressure, it no longer
+    > accepts new connections and waits until the persistent queue has space to
+    > accept more events.
+    Ref: https://www.elastic.co/guide/en/logstash/current/persistent-queues.html#backpressure-persistent-queue
+
+    - when does a new beats connection happen?
+        - one connection per file line would backpressure nicely, but be
+          otherwise super socket-create intensive
+        - one connection per (gigabytes sized) file wouldn't backpressure nicely,
+          but would be socket friendly
+        - or maybe connections carry chunks of files?
+        - does beats pause reading in the input file, or does it read into beats process memory?
+
+do
+- convert pipeline rule to logstash filter
