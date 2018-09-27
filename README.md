@@ -94,6 +94,8 @@ why
   for my simple use case only area graylog UI is better than kibana feature wise
   is exporting queries.
 
+    EDIT: graylog possibly beats logstash on pipeline development (can test in the UI).
+
 research + test
 - beats backpressure
 
